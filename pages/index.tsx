@@ -11,8 +11,8 @@ import Users from '../components/users';
 const Home: NextPage = () => {
   const [minimizeLeftSide, setLeftSideMinimize] = useState(false);
   const [minimizeRightSide, setRightSideMinimize] = useState(false);
-  const leftClassName = minimizeLeftSide ? 'max-w-[40px]' : 'max-w-[200px]';
-  const rightClassName = minimizeRightSide ? 'max-w-[40px]' : 'max-w-[200px]';
+  const leftClassName = minimizeLeftSide ? 'max-w-[0]' : 'max-w-[200px]';
+  const rightClassName = minimizeRightSide ? 'max-w-[0]' : 'max-w-[200px]';
 
   return (
     <Layout>
@@ -37,12 +37,16 @@ const Home: NextPage = () => {
               )}
             </button>
           </div>
-          <div className={`bg-white grow ${leftClassName}`}>
+          <div
+            className={`bg-white grow overflow-y-auto scrollbar ${leftClassName}`}
+          >
             <Channels minimizeLeftSide={minimizeLeftSide} />
           </div>
         </div>
         {/*messenges block*/}
-        <div className='grow bg-yellow-400'>Center</div>
+        <div className='grow bg-slate-100 overflow-y-auto scrollbar'>
+          Messenges
+        </div>
         {/*right side*/}
         <div className='indicator'>
           <div className='indicator-item indicator-start indicator-middle'>
@@ -63,7 +67,9 @@ const Home: NextPage = () => {
               )}
             </button>
           </div>
-          <div className={`grow bg-white ${rightClassName}`}>
+          <div
+            className={`grow bg-white overflow-y-auto scrollbar ${rightClassName}`}
+          >
             <Users minimizeRightSide={minimizeRightSide} />
           </div>
         </div>

@@ -4,7 +4,7 @@ import { ObjectID } from 'bson';
 export interface IChannel {
   name: string;
   description?: string;
-  public: boolean;
+  ispublic: boolean;
   adminID: string;
   users?: string[];
 }
