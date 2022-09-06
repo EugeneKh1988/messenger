@@ -3,6 +3,12 @@ import { faPlus, faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NewChannel from './newChannel';
 import useSWR from 'swr';
+// redux
+import { useAppDispatch, useAppSelector } from './../lib/store/hooks';
+import {
+  setCurrentChannel,
+  currentChannelID,
+} from './../lib/store/channelSlice';
 
 interface IChannels {
   minimizeLeftSide: boolean;
@@ -20,7 +26,9 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
   const fetcher = (args: string) => fetch(args).then((res) => res.json());
   const { data, error } = useSWR('/api/channel', fetcher);
   // current channel id
-  const [channelID, setChannelID] = useState('');
+  //const [channelID, setChannelID] = useState('');
+  const channelID = useAppSelector(currentChannelID);
+  const dispatch = useAppDispatch();
 
   const ownChannels: () => React.ReactNode | null = () => {
     if (!data || data?.own.length === 0) {
@@ -83,7 +91,7 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
     channelID: string
   ) => void = (e, channelID) => {
     e.preventDefault();
-    setChannelID(channelID);
+    dispatch(setCurrentChannel(channelID));
   };
 
   return (
