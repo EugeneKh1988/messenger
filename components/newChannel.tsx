@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useSWRConfig } from 'swr';
 
 interface INewChannel {
   viewState?: boolean;
@@ -12,6 +11,8 @@ const NewChannel: React.FC<INewChannel> = () => {
   const [description, setDescription] = useState('');
   const [channelState, setChannelState] = useState(false);
   const [buttonDisabled, setButtonState] = useState(false);
+  // for revalidate channels
+  const { mutate } = useSWRConfig();
 
   const clearFields: () => void = () => {
     setName('');
@@ -31,11 +32,13 @@ const NewChannel: React.FC<INewChannel> = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, ispublic: channelState, description }),
+        body: JSON.stringify({ name, ispublic: !channelState, description }),
       });
       const result = await response.json();
       if (result && result.status) {
         clearFields();
+        // for reload channels
+        mutate('/api/channel');
       }
       console.log(result);
     } catch (error) {

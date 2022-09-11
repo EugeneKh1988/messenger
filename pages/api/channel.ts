@@ -7,6 +7,7 @@ import {
   getOwnChannels,
   getSubscribedChannels,
   deleteChannel,
+  getChannelsByName,
 } from '../../lib/dbChannels';
 import { getUserID } from '../../lib/user';
 
@@ -41,7 +42,23 @@ const channel: (
     // get channels
     if (req.method === 'GET') {
       const userID = await getUserID(session.user.email || '');
-      if (userID) {
+      // get name of channel and page
+      const { name, page } = req.query;
+      if (
+        userID &&
+        name &&
+        page &&
+        !Array.isArray(name) &&
+        !Array.isArray(page)
+      ) {
+        // get channels by name and page
+        const channels =
+          parseInt(page) > 0
+            ? await getChannelsByName(name, parseInt(page))
+            : [];
+        return res.json({ channels });
+      } else if (userID) {
+        // get channels by user
         const own = await getOwnChannels(userID);
         const sub = await getSubscribedChannels(userID);
         return res.json({ own, sub });

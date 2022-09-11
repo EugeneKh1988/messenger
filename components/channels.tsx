@@ -14,7 +14,7 @@ interface IChannels {
   minimizeLeftSide: boolean;
 }
 
-interface IChannel {
+export interface IChannel {
   _id: string;
   name: string;
   description: string;
@@ -31,7 +31,7 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
   const dispatch = useAppDispatch();
 
   const ownChannels: () => React.ReactNode | null = () => {
-    if (!data || data?.own.length === 0) {
+    if (!data || data?.own?.length === 0) {
       return null;
     }
     return (
@@ -48,7 +48,7 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
                   onClick={(e) => chooseChannel(e, channel._id)}
                 >
                   {channel.name}
-                  {channel.ispublic ? <FontAwesomeIcon icon={faLock} /> : null}
+                  {!channel.ispublic ? <FontAwesomeIcon icon={faLock} /> : null}
                 </a>
               </li>
             ))}
@@ -59,7 +59,7 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
   };
 
   const subscribedChannels: () => React.ReactNode | null = () => {
-    if (!data || data?.sub.length === 0) {
+    if (!data || data?.sub?.length === 0) {
       return null;
     }
     return (
@@ -76,7 +76,7 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
                   onClick={(e) => chooseChannel(e, channel._id)}
                 >
                   {channel.name}
-                  {channel.ispublic ? <FontAwesomeIcon icon={faLock} /> : null}
+                  {!channel.ispublic ? <FontAwesomeIcon icon={faLock} /> : null}
                 </a>
               </li>
             ))}
