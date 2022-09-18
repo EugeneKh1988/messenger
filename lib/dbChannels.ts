@@ -113,27 +113,30 @@ const getChannelUsers: (
   page: number
 ) => Promise<string[]> = async (channelID, userID, page) => {
   try {
+    const _userID = new ObjectId(userID);
     const client = await clientPromise;
     const db = client.db('messenger');
     const collection = db.collection('channels');
-    const foundChannel = await collection.findOne(
-      {
-        _id: channelID,
-        $or: [{ users: userID }, { adminID: userID }],
-      },
-      { users: { $slice: [(page - 1) * 100, 100] } }
-    );
-    if (!foundChannel || !foundChannel?.users) {
+    const foundChannel = await collection
+      .find({
+        _id: new ObjectId(channelID),
+        $or: [{ users: _userID }, { adminID: _userID }],
+      })
+      .project({ users: { $slice: [(page - 1) * 100, 100] } });
+    let res: any = null;
+    await foundChannel.forEach((elem: any) => (res = elem));
+
+    if (!res || !res?.users) {
       return [];
     }
-    return foundChannel.users;
+    return res.users;
   } catch (error) {
     console.log(error);
     return [];
   }
 };
 
-// delete a user from the channel
+// delete a user from the channel by itself
 const deleteChannelUser: (
   channelID: string,
   userID: string
@@ -145,6 +148,29 @@ const deleteChannelUser: (
     const collection = db.collection('channels');
     await collection.updateOne(
       { _id: new ObjectId(channelID) },
+      { $pull: { users: _userID } }
+    );
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+  return true;
+};
+
+// delete a user from the channel by admin
+const deleteChannelUserByAdmin: (
+  channelID: string,
+  userID: string,
+  adminID: string
+) => Promise<boolean> = async (channelID, userID, adminID) => {
+  try {
+    const _userID = new ObjectId(userID);
+    const _adminID = new ObjectId(adminID);
+    const client = await clientPromise;
+    const db = client.db('messenger');
+    const collection = db.collection('channels');
+    await collection.updateOne(
+      { _id: new ObjectId(channelID), adminID: _adminID },
       { $pull: { users: _userID } }
     );
   } catch (error) {
@@ -189,5 +215,6 @@ export {
   addUserToChannel,
   getChannelUsers,
   deleteChannelUser,
+  deleteChannelUserByAdmin,
   getChannelsByName,
 };

@@ -1,6 +1,7 @@
 import clientPromise from './mongodb';
 
 export interface IDbUser {
+  _id?: string;
   name: string;
   familyName: string;
   email: string;
@@ -40,4 +41,23 @@ const getUserID: (email: string) => Promise<string> = async (email) => {
   return '';
 };
 
-export { createUser, getUserID };
+const getUsersByID: (ids: string[]) => Promise<IDbUser[]> = async (ids) => {
+  if (!ids || ids?.length === 0) {
+    return [];
+  }
+  try {
+    const client = await clientPromise;
+    const db = client.db('messenger');
+    const collection = db.collection('users');
+    const foundUsers = await collection.find({ _id: { $in: ids } }).toArray();
+
+    if (foundUsers) {
+      return foundUsers;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return [];
+};
+
+export { createUser, getUserID, getUsersByID };

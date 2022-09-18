@@ -7,6 +7,7 @@ import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Users from '../components/users';
+import Messages from '../components/messages';
 
 const Home: NextPage = () => {
   const [minimizeLeftSide, setLeftSideMinimize] = useState(false);
@@ -45,7 +46,7 @@ const Home: NextPage = () => {
         </div>
         {/*messenges block*/}
         <div className='grow bg-slate-100 overflow-y-auto scrollbar'>
-          Messenges
+          <Messages />
         </div>
         {/*right side*/}
         <div className='indicator'>

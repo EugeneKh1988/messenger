@@ -7,6 +7,7 @@ import useSWR from 'swr';
 import { useAppDispatch, useAppSelector } from './../lib/store/hooks';
 import {
   setCurrentChannel,
+  setAdminID,
   currentChannelID,
 } from './../lib/store/channelSlice';
 
@@ -45,7 +46,9 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
                 <a
                   href=''
                   className={channelID === channel._id ? 'active' : ''}
-                  onClick={(e) => chooseChannel(e, channel._id)}
+                  onClick={(e) =>
+                    chooseChannel(e, channel._id, channel.adminID)
+                  }
                 >
                   {channel.name}
                   {!channel.ispublic ? <FontAwesomeIcon icon={faLock} /> : null}
@@ -73,7 +76,9 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
                 <a
                   href=''
                   className={channelID === channel._id ? 'active' : ''}
-                  onClick={(e) => chooseChannel(e, channel._id)}
+                  onClick={(e) =>
+                    chooseChannel(e, channel._id, channel.adminID)
+                  }
                 >
                   {channel.name}
                   {!channel.ispublic ? <FontAwesomeIcon icon={faLock} /> : null}
@@ -88,10 +93,12 @@ const Channels: React.FC<IChannels> = ({ minimizeLeftSide }) => {
 
   const chooseChannel: (
     e: React.MouseEvent<HTMLAnchorElement>,
-    channelID: string
-  ) => void = (e, channelID) => {
+    channelID: string,
+    adminID: string
+  ) => void = (e, channelID, adminID) => {
     e.preventDefault();
     dispatch(setCurrentChannel(channelID));
+    dispatch(setAdminID(adminID));
   };
 
   return (

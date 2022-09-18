@@ -5,7 +5,9 @@ import {
   addUserToChannel,
   getChannelUsers,
   deleteChannelUser,
+  deleteChannelUserByAdmin,
 } from '../../lib/dbChannels';
+import { getUsersByID } from '../../lib/user';
 import { getUserID } from '../../lib/user';
 
 const userChannel: (
@@ -39,16 +41,33 @@ const userChannel: (
           parseInt(page) > 0
             ? await getChannelUsers(channelID, userID, parseInt(page))
             : [];
-        return res.json({ users });
+        const usersData = await getUsersByID(users);
+        return res.json({ users: usersData });
       }
       return res.json({ users: [] });
     }
     // delete user from the channel
     if (req.method === 'DELETE') {
-      const { channelID } = req.body;
+      const { channelID, outerUserID } = req.body;
       const userID = await getUserID(session.user.email || '');
-      if (channelID && userID && !Array.isArray(channelID)) {
+      // if user want to delete itself
+      if (channelID && userID && !Array.isArray(channelID) && !outerUserID) {
         const status = await deleteChannelUser(channelID, userID);
+        return res.json({ status });
+      }
+      // if admin want to delete other user
+      if (
+        channelID &&
+        userID &&
+        !Array.isArray(channelID) &&
+        outerUserID &&
+        !Array.isArray(outerUserID)
+      ) {
+        const status = await deleteChannelUserByAdmin(
+          channelID,
+          outerUserID,
+          userID
+        );
         return res.json({ status });
       }
       return res.json({ status: false });
