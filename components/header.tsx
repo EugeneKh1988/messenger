@@ -20,16 +20,18 @@ const Header: React.FC = () => {
           <label tabIndex={0} className='btn mr-3'>
             <FontAwesomeIcon icon={faBars} className='text-[32px] text-white' />
           </label>
-          <ul
-            tabIndex={0}
-            className='menu dropdown-content p-2 shadow bg-white rounded-box w-52 mt-4'
-          >
-            <li>
-              <label htmlFor='modal-find-channel' className='modal-button'>
-                Найти канал
-              </label>
-            </li>
-          </ul>
+          {user ? (
+            <ul
+              tabIndex={0}
+              className='menu dropdown-content p-2 shadow bg-white rounded-box w-52 mt-4'
+            >
+              <li>
+                <label htmlFor='modal-find-channel' className='modal-button'>
+                  Найти канал
+                </label>
+              </li>
+            </ul>
+          ) : null}
         </div>
         {user ? (
           <Image src={user.image} width={36} height={36} alt='User avatar' />

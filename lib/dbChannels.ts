@@ -65,12 +65,12 @@ const deleteChannel: (
     const client = await clientPromise;
     const db = client.db('messenger');
     const collection = db.collection('channels');
-    await collection.deleteOne({ _id: channelID, adminID });
+    const result = await collection.deleteOne({ _id: channelID, adminID });
+    return result.deletedCount > 0 ? true : false;
   } catch (error) {
     console.log(error);
     return false;
   }
-  return true;
 };
 
 // add user to a channel

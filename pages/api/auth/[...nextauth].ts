@@ -3,6 +3,9 @@ import GoogleProvider from 'next-auth/providers/google';
 import { IDbUser, createUser } from '../../../lib/user';
 
 export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: '/signin',
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID || '',
